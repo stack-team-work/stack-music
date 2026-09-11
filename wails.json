@@ -12,7 +12,7 @@
   },
   "info": {
     "productName": "堆栈音乐播放器",
-    "productVersion": "1.0.1",
+    "productVersion": "1.1.0",
     "copyright": "go-music",
     "comments": "Go + Wails + Vue3 桌面音乐播放器"
   }

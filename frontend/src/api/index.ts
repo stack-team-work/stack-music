@@ -4,8 +4,8 @@
 // 两端接口签名一致，业务组件无感知。
 
 import type {
-  LibraryInfo, LyricLine, Playlist, PlayRequest, PlayerEvent,
-  ScanDone, ScanProgress, Song, Status,
+  GenConfig, GenRequest, GenTask, LibraryInfo, LyricLine, Playlist, PlayRequest,
+  PlayerEvent, ScanDone, ScanProgress, Song, Status,
 } from '../types'
 
 const w = window as any
@@ -139,5 +139,30 @@ export const api = {
   onScanDone: (cb: (d: ScanDone) => void): (() => void) => {
     if (mode === 'wails') return onWailsEvent('scan:done', cb)
     return () => {}
+  },
+
+  // ---------- AI 音乐生成 ----------
+
+  getGenConfig: (): Promise<GenConfig> =>
+    mode === 'wails' ? wailsCall('GetGenConfig') : http('/api/gen/config'),
+
+  setGenConfig: (cfg: Partial<GenConfig>): Promise<void> =>
+    mode === 'wails' ? wailsCall('SetGenConfig', cfg) : http('/api/gen/config', 'POST', cfg),
+
+  genSubmit: (req: GenRequest): Promise<GenTask> =>
+    mode === 'wails' ? wailsCall('GenSubmit', req) : http('/api/gen/submit', 'POST', req),
+
+  genTasks: (): Promise<GenTask[]> =>
+    mode === 'wails' ? wailsCall('GenTasks') : http('/api/gen/tasks').then((r: any) => r.tasks || []),
+
+  genDeleteTask: (id: number): Promise<void> =>
+    mode === 'wails' ? wailsCall('GenDeleteTask', id) : http(`/api/gen/tasks/${id}`, 'DELETE'),
+
+  // 生成任务事件（Wails 推送；HTTP 模式由轮询兜底）
+  onGenEvent: (cb: (name: string, task: GenTask) => void): (() => void) => {
+    if (mode !== 'wails') return () => {}
+    const offs = ['gen:queued', 'gen:done', 'gen:failed'].map(n =>
+      onWailsEvent(n, (task: GenTask) => cb(n, task)))
+    return () => offs.forEach(off => off())
   },
 }

@@ -172,6 +172,15 @@ func withinRoots(path string, roots []string) bool {
 	return false
 }
 
+// IndexFile 导出单文件索引：提取标签/封面/时长（AI 生成音频入库复用）。
+func (l *Library) IndexFile(path string) (*model.Song, error) {
+	fi, err := os.Stat(path)
+	if err != nil {
+		return nil, err
+	}
+	return l.indexFile(path, fi.Size(), fi.ModTime().Unix())
+}
+
 // indexFile 提取单个文件的标签、封面与时长。
 func (l *Library) indexFile(path string, size, mod int64) (*model.Song, error) {
 	f, err := os.Open(path)

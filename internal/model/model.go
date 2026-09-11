@@ -22,6 +22,7 @@ type Song struct {
 	ModTime   int64   `json:"mod_time"` // 文件修改时间（Unix 秒），用于增量扫描
 	Hash      string  `json:"hash"`     // 路径哈希，封面缓存文件名
 	HasCover  bool    `json:"has_cover"`
+	Source    string  `json:"source"`    // file / generated
 	Favorited bool    `json:"favorited"` // 是否收藏
 }
 
@@ -78,3 +79,39 @@ type Playlist struct {
 	SongCount int     `json:"song_count,omitempty"`
 	SongIDs   []int64 `json:"song_ids,omitempty"`
 }
+
+// SongSource 歌曲来源。
+const (
+	SourceFile      = "file"      // 导入的本地文件
+	SourceGenerated = "generated" // AI 生成的音乐
+)
+
+// GenTask AI 音乐生成任务。
+type GenTask struct {
+	ID           int64  `json:"id"`
+	Mode         string `json:"mode"`           // text / lyrics / instrumental
+	Prompt       string `json:"prompt"`         // 文字描述
+	Lyrics       string `json:"lyrics"`         // 歌词（mode=lyrics）
+	Style        string `json:"style"`          // 风格
+	Mood         string `json:"mood"`           // 情绪
+	Lang         string `json:"lang"`           // 语言
+	Title        string `json:"title"`          // 歌曲标题
+	Provider     string `json:"provider"`       // minimax / suno / local
+	Model        string `json:"model"`          // 模型名（中转可自定义）
+	RemoteTaskID string `json:"remote_task_id"` // 平台侧任务 ID
+	Status       string `json:"status"`         // pending/queued/generating/done/failed
+	AudioPath    string `json:"audio_path"`     // 生成音频本地路径
+	SongID       int64  `json:"song_id"`        // 入库后的歌曲 ID
+	FailReason   string `json:"fail_reason"`    // 失败原因
+	CreatedAt    int64  `json:"created_at"`
+	UpdatedAt    int64  `json:"updated_at"`
+}
+
+// GenTask 状态。
+const (
+	GenPending    = "pending"
+	GenQueued     = "queued"
+	GenGenerating = "generating"
+	GenDone       = "done"
+	GenFailed     = "failed"
+)

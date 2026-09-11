@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS songs (
 	size      INTEGER NOT NULL DEFAULT 0,
 	mod_time  INTEGER NOT NULL DEFAULT 0,
 	hash      TEXT    NOT NULL DEFAULT '',
-	has_cover INTEGER NOT NULL DEFAULT 0
+	has_cover INTEGER NOT NULL DEFAULT 0,
+	source    TEXT    NOT NULL DEFAULT 'file'
 );
 CREATE INDEX IF NOT EXISTS idx_songs_title ON songs(title);
 CREATE INDEX IF NOT EXISTS idx_songs_artist ON songs(artist);
@@ -56,6 +57,26 @@ CREATE TABLE IF NOT EXISTS history (
 	song_id   INTEGER NOT NULL REFERENCES songs(id) ON DELETE CASCADE,
 	played_at INTEGER NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS gen_tasks (
+	id             INTEGER PRIMARY KEY AUTOINCREMENT,
+	mode           TEXT    NOT NULL DEFAULT 'text',
+	prompt         TEXT    NOT NULL DEFAULT '',
+	lyrics         TEXT    NOT NULL DEFAULT '',
+	style          TEXT    NOT NULL DEFAULT '',
+	mood           TEXT    NOT NULL DEFAULT '',
+	lang           TEXT    NOT NULL DEFAULT '',
+	title          TEXT    NOT NULL DEFAULT '',
+	provider       TEXT    NOT NULL DEFAULT '',
+	model          TEXT    NOT NULL DEFAULT '',
+	remote_task_id TEXT    NOT NULL DEFAULT '',
+	status         TEXT    NOT NULL DEFAULT 'pending',
+	audio_path     TEXT    NOT NULL DEFAULT '',
+	song_id        INTEGER NOT NULL DEFAULT 0,
+	fail_reason    TEXT    NOT NULL DEFAULT '',
+	created_at     INTEGER NOT NULL,
+	updated_at     INTEGER NOT NULL
+);
 `
 
 // Store 数据库访问对象。
@@ -74,6 +95,8 @@ func Open(dataDir string) (*Store, error) {
 		db.Close()
 		return nil, err
 	}
+	// 兼容旧库：为已存在的 songs 表补充 source 列（新库由 schema 自带）
+	_, _ = db.Exec(`ALTER TABLE songs ADD COLUMN source TEXT NOT NULL DEFAULT 'file'`)
 	return &Store{db: db}, nil
 }
 
@@ -85,7 +108,7 @@ func songFromRow(sc interface{ Scan(...any) error }) (*model.Song, error) {
 	var hasCover int
 	err := sc.Scan(&so.ID, &so.Path, &so.Title, &so.Artist, &so.Album, &so.Genre,
 		&so.Year, &so.Track, &so.Duration, &so.Format, &so.Size, &so.ModTime,
-		&so.Hash, &hasCover)
+		&so.Hash, &hasCover, &so.Source)
 	if err != nil {
 		return nil, err
 	}
@@ -93,14 +116,14 @@ func songFromRow(sc interface{ Scan(...any) error }) (*model.Song, error) {
 	return &so, nil
 }
 
-const songCols = "id, path, title, artist, album, genre, year, track, duration, format, size, mod_time, hash, has_cover"
+const songCols = "id, path, title, artist, album, genre, year, track, duration, format, size, mod_time, hash, has_cover, source"
 
 // songColsPrefixed join 查询使用的带别名列，避免列名歧义。
 func songColsPrefixed(a string) string {
 	return a + ".id, " + a + ".path, " + a + ".title, " + a + ".artist, " +
 		a + ".album, " + a + ".genre, " + a + ".year, " + a + ".track, " +
 		a + ".duration, " + a + ".format, " + a + ".size, " + a + ".mod_time, " +
-		a + ".hash, " + a + ".has_cover"
+		a + ".hash, " + a + ".has_cover, " + a + ".source"
 }
 
 func songArgs(so *model.Song) []any {
@@ -108,20 +131,25 @@ func songArgs(so *model.Song) []any {
 	if so.HasCover {
 		hasCover = 1
 	}
+	src := so.Source
+	if src == "" {
+		src = model.SourceFile
+	}
 	return []any{so.Path, so.Title, so.Artist, so.Album, so.Genre, so.Year,
-		so.Track, so.Duration, so.Format, so.Size, so.ModTime, so.Hash, hasCover}
+		so.Track, so.Duration, so.Format, so.Size, so.ModTime, so.Hash, hasCover, src}
 }
 
 // UpsertSong 插入或更新歌曲（按 path 唯一）。返回歌曲 ID。
 func (s *Store) UpsertSong(so *model.Song) (int64, error) {
 	res, err := s.db.Exec(`
-		INSERT INTO songs (path, title, artist, album, genre, year, track, duration, format, size, mod_time, hash, has_cover)
-		VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+		INSERT INTO songs (path, title, artist, album, genre, year, track, duration, format, size, mod_time, hash, has_cover, source)
+		VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 		ON CONFLICT(path) DO UPDATE SET
 			title=excluded.title, artist=excluded.artist, album=excluded.album,
 			genre=excluded.genre, year=excluded.year, track=excluded.track,
 			duration=excluded.duration, format=excluded.format, size=excluded.size,
-			mod_time=excluded.mod_time, hash=excluded.hash, has_cover=excluded.has_cover`,
+			mod_time=excluded.mod_time, hash=excluded.hash, has_cover=excluded.has_cover,
+			source=excluded.source`,
 		songArgs(so)...)
 	if err != nil {
 		return 0, err

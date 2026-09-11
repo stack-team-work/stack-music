@@ -7,6 +7,14 @@ import (
 	"path/filepath"
 )
 
+// GenConfig AI 音乐生成配置。
+type GenConfig struct {
+	Provider string `json:"provider"` // minimax / suno / local
+	BaseURL  string `json:"base_url"` // 官方或中转接口地址
+	APIKey   string `json:"api_key"`
+	Model    string `json:"model"`
+}
+
 // Config 播放器运行配置，保存于 data/config.json。
 type Config struct {
 	// Port 本地 Web 服务端口（局域网远程控制用）。
@@ -17,6 +25,8 @@ type Config struct {
 	Mode int `json:"mode"`
 	// Libraries 已导入的音乐文件夹（绝对路径）。
 	Libraries []string `json:"libraries"`
+	// Gen AI 音乐生成配置。
+	Gen GenConfig `json:"gen"`
 }
 
 // Default 返回默认配置。
@@ -25,6 +35,7 @@ func Default() *Config {
 		Port:   8080,
 		Volume: 100,
 		Mode:   1, // 列表循环
+		Gen:    GenConfig{Provider: "local"},
 	}
 }
 

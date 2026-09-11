@@ -201,6 +201,63 @@ data: {"state":"playing",...}
 { "lines": [ { "time": 1.0, "text": "第一句" }, { "time": 3.0, "text": "第二句" } ] }
 ```
 
+## AI 音乐生成
+
+### GET /api/gen/config
+
+读取生成配置（含各后端默认地址/模型）。
+
+```json
+{
+  "provider": "local",            // local / minimax / suno
+  "base_url": "",
+  "api_key": "",
+  "model": "",
+  "defaults": {
+    "minimax": { "base_url": "https://api.minimax.chat/v1/music_generation", "model": "music-01" },
+    "suno": { "base_url": "https://api.sunoapi.org/api/v1/generate", "model": "chirp-v3-5" }
+  }
+}
+```
+
+### POST /api/gen/config
+
+保存生成配置（支持官方或中转地址）：
+
+```json
+{ "provider": "minimax", "base_url": "https://…", "api_key": "sk-…", "model": "music-01" }
+```
+
+### POST /api/gen/submit
+
+提交生成任务，立即返回任务对象（status=pending，后台异步生成）。
+
+```json
+{
+  "mode": "text",              // text / lyrics / instrumental
+  "prompt": "夏日晚风的海边",    // text/instrumental 模式必填
+  "lyrics": "",                // lyrics 模式必填（≤3000 字）
+  "style": "Lofi",             // Pop/Hip Hop/Rock/Electronic/Acoustic/R&B/Jazz/Classical/Country/Lofi
+  "mood": "平静",               // 欢快/伤感/激昂/平静/浪漫/神秘
+  "lang": "中文",               // 中文/英文/日文/韩文/粤语/纯音乐
+  "title": "夏夜的栈道"          // 可空，自动命名
+}
+```
+
+未配置 API Key 且使用远端后端时返回 `400 {"error":"未配置 API Key：…"}`。
+
+### GET /api/gen/tasks
+
+生成历史（新→旧），status ∈ pending / queued / generating / done / failed：
+
+```json
+{ "tasks": [ { "id": 1, "title": "夏夜的栈道", "status": "done", "song_id": 51, "audio_path": "…", "fail_reason": "" } ] }
+```
+
+### DELETE /api/gen/tasks/:id
+
+删除生成任务：级联删除入库歌曲与本地音频文件。
+
 ## 封面
 
 ### GET /api/covers/:id

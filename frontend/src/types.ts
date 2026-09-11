@@ -89,3 +89,53 @@ export function formatSec(sec: number): string {
 }
 
 export const MODE_NAMES = ['顺序播放', '列表循环', '单曲循环', '随机播放']
+// ---------- AI 音乐生成 ----------
+
+export type GenMode = 'text' | 'lyrics' | 'instrumental'
+export type GenProvider = 'minimax' | 'suno' | 'local'
+
+export interface GenRequest {
+  mode: GenMode
+  prompt: string
+  lyrics: string
+  style: string
+  mood: string
+  lang: string
+  title: string
+}
+
+export interface GenTask {
+  id: number
+  mode: GenMode
+  prompt: string
+  lyrics: string
+  style: string
+  mood: string
+  lang: string
+  title: string
+  provider: string
+  model: string
+  remote_task_id: string
+  status: 'pending' | 'queued' | 'generating' | 'done' | 'failed'
+  audio_path: string
+  song_id: number
+  fail_reason: string
+  created_at: number
+  updated_at: number
+}
+
+export interface GenConfig {
+  provider: GenProvider
+  base_url: string
+  api_key: string
+  model: string
+  defaults: Record<string, { base_url: string; model: string }>
+}
+
+export const GEN_STYLES = [
+  'Pop', 'Hip Hop', 'Rock', 'Electronic', 'Acoustic',
+  'R&B', 'Jazz', 'Classical', 'Country', 'Lofi',
+] as const
+
+export const GEN_MOODS = ['欢快', '伤感', '激昂', '平静', '浪漫', '神秘'] as const
+export const GEN_LANGS = ['中文', '英文', '日文', '韩文', '粤语', '纯音乐'] as const

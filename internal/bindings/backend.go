@@ -11,6 +11,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
 	"go-music/internal/config"
+	"go-music/internal/gen"
 	"go-music/internal/library"
 	"go-music/internal/lyrics"
 	"go-music/internal/model"
@@ -61,6 +62,7 @@ type Backend struct {
 	lib     *library.Library
 	pl      *player.Player
 	dataDir string
+	genMgr  *gen.Manager
 
 	ctx context.Context
 	mu  sync.Mutex // 保护扫描等操作
@@ -70,7 +72,13 @@ type Backend struct {
 
 // New 构造绑定层。
 func New(cfg *config.Config, st *store.Store, lib *library.Library, pl *player.Player, dataDir string) *Backend {
-	return &Backend{cfg: cfg, st: st, lib: lib, pl: pl, dataDir: dataDir}
+	b := &Backend{cfg: cfg, st: st, lib: lib, pl: pl, dataDir: dataDir}
+	// AI 音乐生成管理器（配置每次提交时实时读取）
+	b.genMgr = gen.NewManager(st, lib, dataDir, func() gen.Config {
+		g := b.cfg.Gen
+		return gen.Config{Provider: g.Provider, BaseURL: g.BaseURL, APIKey: g.APIKey, Model: g.Model}
+	})
+	return b
 }
 
 // OnStartup Wails 生命周期回调：保存上下文、启动事件转发、记录播放历史。
@@ -85,6 +93,10 @@ func (b *Backend) OnStartup(ctx context.Context) {
 	// 扫描进度推送给前端
 	b.lib.OnProgress = func(done, total int) {
 		runtime.EventsEmit(b.ctx, "scan:progress", &Progress{Done: done, Total: total})
+	}
+	// AI 生成任务事件 → 前端
+	b.genMgr.OnEvent = func(name string, payload any) {
+		runtime.EventsEmit(b.ctx, name, payload)
 	}
 	// 已有曲库目录时启动自动扫描（增量，快速；后台执行不阻塞窗口）
 	if len(b.cfg.Libraries) > 0 {
@@ -104,6 +116,9 @@ func (b *Backend) startEventLoop() {
 		}
 	}()
 }
+
+// GenManager 返回 AI 生成管理器（供 server 复用同一实例）。
+func (b *Backend) GenManager() *gen.Manager { return b.genMgr }
 
 // --- 播放控制 ---
 

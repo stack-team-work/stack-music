@@ -8,6 +8,7 @@ import LibraryView from './views/LibraryView.vue'
 import PlaylistsView from './views/PlaylistsView.vue'
 import FavoritesView from './views/FavoritesView.vue'
 import HistoryView from './views/HistoryView.vue'
+import GenView from './views/GenView.vue'
 import LyricsPanel from './components/LyricsPanel.vue'
 import { api } from './api'
 import { store, updatePlayingId } from './store'
@@ -55,6 +56,7 @@ const viewComponent = computed(() => {
     case 'playlists': return PlaylistsView
     case 'favorites': return FavoritesView
     case 'history': return HistoryView
+    case 'gen': return GenView
     default: return LibraryView
   }
 })

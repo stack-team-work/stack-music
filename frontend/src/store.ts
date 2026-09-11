@@ -2,7 +2,7 @@
 import { reactive } from 'vue'
 import type { Status, Song } from './types'
 
-export type ViewName = 'library' | 'playlists' | 'favorites' | 'history'
+export type ViewName = 'library' | 'playlists' | 'favorites' | 'history' | 'gen'
 
 export const store = reactive({
   view: 'library' as ViewName,

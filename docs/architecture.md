@@ -53,6 +53,7 @@
 | `internal/bindings` | Wails 绑定层 | 前端直调的 Go 方法（播放/曲库/歌单/收藏/历史/歌词/封面/扫描/导入）；播放器事件转 `runtime.EventsEmit` 推给前端；扫描进度推送 |
 | `internal/server` | HTTP 服务 | REST API、SSE、前端静态资源（`fs.FS` 注入，与 Wails 共用 `frontend/dist`） |
 | `internal/lyrics` | LRC 解析 | `[mm:ss.xx]` 时间戳、offset 元数据、按时间排序 |
+| `internal/gen` | AI 音乐生成 | Provider 抽象（MiniMax/Suno 官方或中转，base_url/key/model 可配）+ 本地合成器（离线兜底）+ Manager（提交/轮询/下载/入库/事件），失败重试与 30 分钟超时 |
 | `frontend/` | Vue3 + Naive UI | 双模式 API 层（`src/api/`）；页面：曲库/歌单/收藏/历史；组件：歌曲表格/播放条/歌词面板 |
 
 ## 3. 播放器设计（internal/player）
@@ -160,6 +161,10 @@ history(id, song_id, played_at)   -- 保留最近 200 条
 | 服务端静态资源强制 no-store | 曾出现浏览器缓存旧前端导致界面与后端不一致（排查两轮）；禁缓存一劳永逸 |
 | 索引版本指纹（侧栏 v1.0.x） | 让新旧版本肉眼可辨，配合 no-store 快速确认加载的就是最新版 |
 | 表格卡片化 + 滚动条加亮 | 深色主题下界面元素边界模糊曾误导用户以为数据缺失；视觉反馈优先于功能改动 |
+| AI 生成后端做成可配置 Provider | 官方 API 与第三方中转的接口形态各异且会变化，base_url/key/model 全部开放配置，字段映射集中在 `rest.go` 三个函数 |
+| 内置本地合成器作为兜底 | 没有 Key 也能端到端跑通生成→入库→回听（可自动化验证）；远端模型只需换 Provider，不阻塞主流程 |
+| 生成任务全部落库（gen_tasks 表） | 支持历史回看、参数回填重生成、失败原因追踪；删除任务级联清理入库歌曲与音频文件 |
+| 生成歌曲 source='generated' 标记 + My Music 专辑 | 与导入文件区分（重扫描不受影响），曲库搜索可按专辑/艺术家过滤 |
 | `r.GET("/")` 直接读嵌入 HTML 而非 FileFromFS | Go 1.25 的 FileServer 将 `/index.html` 规范化为 301，FileFromFS 内部把路径设为 `index.html` 必触发该重定向 |
 | 静态页走 `NoRoute` 而非 `StaticFS("/")` | `/*filepath` 通配与 `/api/*` 路由冲突导致 panic |
 | embed 后 `fs.Sub("frontend/dist")` 再传 Wails/Gin | `all:frontend/dist` 的 embed 根是 `frontend/`，直接按 `index.html` 查找会 miss |

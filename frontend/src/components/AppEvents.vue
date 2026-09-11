@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// 全局事件接收器：订阅扫描完成/进度事件，弹提示并让各视图重载。
+// 全局事件接收器：订阅扫描与 AI 生成任务事件，弹提示并触发视图重载。
 import { onMounted, onUnmounted } from 'vue'
 import { useMessage } from 'naive-ui'
 import { api } from '../api'
@@ -9,6 +9,7 @@ const message = useMessage()
 
 let offDone: (() => void) | undefined
 let offProgress: (() => void) | undefined
+let offGen: (() => void) | undefined
 
 onMounted(() => {
   offProgress = api.onScanProgress((p) => {
@@ -26,11 +27,22 @@ onMounted(() => {
       message.error('扫描失败')
     }
   })
+
+  // AI 生成任务：完成/失败全局提示；完成后曲库自动重载（新歌已在 My Music 中）
+  offGen = api.onGenEvent((name, task) => {
+    if (name === 'gen:done') {
+      store.scanVersion++
+      message.success(`「${task.title}」生成完成，已加入 My Music`)
+    } else if (name === 'gen:failed') {
+      message.error(`「${task.title}」生成失败：${task.fail_reason || '未知原因'}`)
+    }
+  })
 })
 
 onUnmounted(() => {
   offDone?.()
   offProgress?.()
+  offGen?.()
 })
 </script>
 

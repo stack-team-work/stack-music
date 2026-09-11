@@ -14,6 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"go-music/internal/config"
+	"go-music/internal/gen"
 	"go-music/internal/library"
 	"go-music/internal/lyrics"
 	"go-music/internal/model"
@@ -56,6 +57,7 @@ type Server struct {
 	st     *store.Store
 	lib    *library.Library
 	pl     Controller
+	genMgr *gen.Manager
 	port   int
 	assets fs.FS // 前端构建产物（frontend/dist）
 }
@@ -64,6 +66,9 @@ type Server struct {
 func New(cfg *config.Config, st *store.Store, lib *library.Library, pl Controller, assets fs.FS) *Server {
 	return &Server{cfg: cfg, st: st, lib: lib, pl: pl, port: cfg.Port, assets: assets}
 }
+
+// SetGenManager 注入 AI 音乐生成管理器（可选）。
+func (s *Server) SetGenManager(m *gen.Manager) { s.genMgr = m }
 
 // Start 启动 Gin 服务（阻塞直至出错）。
 func (s *Server) Start() error {
@@ -123,6 +128,13 @@ func (s *Server) buildRouter() *gin.Engine {
 
 		api.GET("/history", s.handleHistory)
 		api.GET("/lyrics/:id", s.handleLyrics)
+
+		// AI 音乐生成
+		api.GET("/gen/config", s.handleGenGetConfig)
+		api.POST("/gen/config", s.handleGenSetConfig)
+		api.POST("/gen/submit", s.handleGenSubmit)
+		api.GET("/gen/tasks", s.handleGenTasks)
+		api.DELETE("/gen/tasks/:id", s.handleGenDelete)
 		api.GET("/covers/:id", s.handleCover)
 		api.POST("/scan", s.handleScan)
 		api.GET("/library", s.handleLibrary)

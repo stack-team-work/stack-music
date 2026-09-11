@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { NIcon } from 'naive-ui'
 import {
-  LibraryOutline, MusicalNotesOutline, HeartOutline, TimeOutline,
+  LibraryOutline, MusicalNotesOutline, HeartOutline, TimeOutline, SparklesOutline,
 } from '@vicons/ionicons5'
 import { store, type ViewName } from '../store'
 
 const items: { key: ViewName; label: string; icon: any }[] = [
   { key: 'library', label: '曲库', icon: LibraryOutline },
+  { key: 'gen', label: 'AI 音乐', icon: SparklesOutline },
   { key: 'playlists', label: '歌单', icon: MusicalNotesOutline },
   { key: 'favorites', label: '收藏', icon: HeartOutline },
   { key: 'history', label: '播放历史', icon: TimeOutline },
@@ -31,7 +32,7 @@ const items: { key: ViewName; label: string; icon: any }[] = [
       <span>{{ it.label }}</span>
     </button>
   </div>
-  <div class="side-footer">v1.0.2 · Go + Wails</div>
+  <div class="side-footer">v1.1.0 · Go + Wails</div>
 </template>
 
 <style scoped>
