@@ -12,9 +12,9 @@ import (
 	"sync"
 	"time"
 
-	"go-music/internal/library"
-	"go-music/internal/model"
-	"go-music/internal/store"
+	"stack-music/internal/library"
+	"stack-music/internal/model"
+	"stack-music/internal/store"
 )
 
 const (

@@ -6,7 +6,7 @@ import (
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
-	"go-music/internal/background"
+	"stack-music/internal/background"
 )
 
 // Backgrounds 背景列表 + 当前选择（前端直接消费）。

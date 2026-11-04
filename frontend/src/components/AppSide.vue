@@ -18,8 +18,8 @@ const items: { key: ViewName; label: string; icon: any }[] = [
   <div class="brand">
     <div class="brand-mark">♪</div>
     <div class="brand-text">
-      <div class="brand-name">堆栈音乐</div>
-      <div class="brand-sub">Stack Music Player</div>
+      <div class="brand-name">Stack Music</div>
+      <div class="brand-sub">Music Player</div>
     </div>
   </div>
 

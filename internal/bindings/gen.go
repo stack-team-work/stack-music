@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"go-music/internal/config"
-	"go-music/internal/gen"
-	"go-music/internal/model"
+	"stack-music/internal/config"
+	"stack-music/internal/gen"
+	"stack-music/internal/model"
 )
 
 // --- AI 音乐生成 ---

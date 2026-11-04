@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"go-music/internal/model"
+	"stack-music/internal/model"
 )
 
 // restProvider 通用任务式 REST 后端：

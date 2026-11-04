@@ -1,4 +1,4 @@
-// 堆栈音乐播放器主入口（Wails v2 + Vue 3）。
+// Stack Music主入口（Wails v2 + Vue 3）。
 //
 // 架构：
 //   - Wails 桌面窗口：Go 绑定（internal/bindings）+ 前端（frontend/dist，go:embed）
@@ -16,13 +16,13 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 
-	"go-music/internal/background"
-	"go-music/internal/bindings"
-	"go-music/internal/config"
-	"go-music/internal/library"
-	"go-music/internal/player"
-	"go-music/internal/server"
-	"go-music/internal/store"
+	"stack-music/internal/background"
+	"stack-music/internal/bindings"
+	"stack-music/internal/config"
+	"stack-music/internal/library"
+	"stack-music/internal/player"
+	"stack-music/internal/server"
+	"stack-music/internal/store"
 )
 
 //go:embed all:frontend/dist
@@ -64,7 +64,7 @@ func main() {
 	}()
 
 	err = wails.Run(&options.App{
-		Title:     "堆栈音乐播放器",
+		Title:     "Stack Music",
 		Width:     1120,
 		Height:    760,
 		MinWidth:  900,

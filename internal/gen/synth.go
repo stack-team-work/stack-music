@@ -19,7 +19,7 @@ func (p *localProvider) Name() string { return ProviderLocal }
 
 // Submit 同步合成音频并返回本地文件路径。
 func (p *localProvider) Submit(_ context.Context, req *Request) (string, string, error) {
-	dir, err := os.MkdirTemp("", "gomusic-gen-*")
+	dir, err := os.MkdirTemp("", "stack-music-gen-*")
 	if err != nil {
 		return "", "", err
 	}

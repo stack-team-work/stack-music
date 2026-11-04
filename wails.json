@@ -1,19 +1,19 @@
 {
   "$schema": "https://wails.io/schemas/config.v2.json",
-  "name": "go-music",
-  "outputfilename": "go-music",
+  "name": "stack-music",
+  "outputfilename": "stack-music",
   "frontend:install": "npm install",
   "frontend:build": "npm run build",
   "frontend:dev:watcher": "npm run dev",
   "frontend:dev:serverUrl": "auto",
   "author": {
-    "name": "go-music",
-    "email": "go-music@local"
+    "name": "stack-music",
+    "email": "stack-music@local"
   },
   "info": {
-    "productName": "堆栈音乐播放器",
+    "productName": "Stack Music",
     "productVersion": "1.2.1",
-    "copyright": "go-music",
+    "copyright": "stack-music",
     "comments": "Go + Wails + Vue3 桌面音乐播放器"
   }
 }

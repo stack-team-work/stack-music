@@ -1,6 +1,6 @@
-# 堆栈音乐播放器
+# Stack Music
 
-> 当前版本 **v1.2.0**（Wails v2 + Vue 3 + Naive UI · 二次元樱粉主题 · AI 音乐生成）
+> 当前版本 **v1.2.1**（Wails v2 + Vue 3 + Naive UI · 二次元樱粉主题 · AI 音乐生成）
 
 一个使用 Go 语言开发的 Windows 桌面音乐播放器：**Wails** 提供桌面窗口（WebView2 渲染），**Vue 3 + Naive UI** 提供现代界面，**beep** 提供音频解码与播放，**Gin** 提供内嵌本地 API 服务，支持同一局域网内的浏览器/手机远程控制。
 
@@ -69,7 +69,7 @@ wails dev
 wails build
 ```
 
-产物在 `build/bin/go-music.exe`（约 30MB，含全部前端资源，单文件分发）。
+产物在 `build/bin/stack-music.exe`（约 30MB，含全部前端资源，单文件分发）。
 
 ### 远程控制
 
@@ -101,7 +101,7 @@ wails build
 ## 目录结构
 
 ```
-go-music/
+stack-music/
 ├── main.go                  # Wails 入口：装配 config/store/library/player/server/bindings
 ├── wails.json               # Wails 配置（名称/产物/前端构建命令）
 ├── internal/

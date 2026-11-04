@@ -7,8 +7,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"go-music/internal/config"
-	"go-music/internal/gen"
+	"stack-music/internal/config"
+	"stack-music/internal/gen"
 )
 
 // --- AI 音乐生成（浏览器远程模式同构接口）---

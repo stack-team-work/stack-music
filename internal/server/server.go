@@ -13,14 +13,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"go-music/internal/background"
-	"go-music/internal/config"
-	"go-music/internal/gen"
-	"go-music/internal/library"
-	"go-music/internal/lyrics"
-	"go-music/internal/model"
-	"go-music/internal/player"
-	"go-music/internal/store"
+	"stack-music/internal/background"
+	"stack-music/internal/config"
+	"stack-music/internal/gen"
+	"stack-music/internal/library"
+	"stack-music/internal/lyrics"
+	"stack-music/internal/model"
+	"stack-music/internal/player"
+	"stack-music/internal/store"
 )
 
 // Session 描述一次播放会话（请求播放时构造）。

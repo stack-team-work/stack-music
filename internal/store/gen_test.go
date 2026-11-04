@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"go-music/internal/model"
+	"stack-music/internal/model"
 )
 
 func openTestStore(t *testing.T) *Store {

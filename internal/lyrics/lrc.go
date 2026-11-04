@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"go-music/internal/model"
+	"stack-music/internal/model"
 )
 
 // Line 一行歌词。

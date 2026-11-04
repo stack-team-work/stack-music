@@ -13,8 +13,8 @@ import (
 
 	"github.com/dhowden/tag"
 
-	"go-music/internal/model"
-	"go-music/internal/store"
+	"stack-music/internal/model"
+	"stack-music/internal/store"
 )
 
 // 支持的音频扩展名。

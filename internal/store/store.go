@@ -11,7 +11,7 @@ import (
 
 	_ "modernc.org/sqlite"
 
-	"go-music/internal/model"
+	"stack-music/internal/model"
 )
 
 const schema = `

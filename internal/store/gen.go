@@ -3,7 +3,7 @@ package store
 import (
 	"database/sql"
 
-	"go-music/internal/model"
+	"stack-music/internal/model"
 )
 
 // --- AI 音乐生成任务 ---

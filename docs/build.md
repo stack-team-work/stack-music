@@ -50,7 +50,7 @@ wails build
 流程：`wails build` 会自动执行 `npm install` → `npm run build`（vue-tsc 类型检查 + vite 产物到 `frontend/dist`）→ 生成绑定声明（`frontend/wailsjs/`）→ CGO 编译并嵌入前端 → 产出：
 
 ```
-build/bin/go-music.exe   # 约 30MB，单文件，含全部前端资源
+build/bin/stack-music.exe   # 约 30MB，单文件，含全部前端资源
 ```
 
 ### 2.1 开发热重载
@@ -71,18 +71,18 @@ cd frontend && npm install && npm run build
 
 ```bash
 winget install -e --id UPX.UPX
-upx --best build/bin/go-music.exe   # 可压到约 10MB
+upx --best build/bin/stack-music.exe   # 可压到约 10MB
 ```
 
 ## 3. 运行与验证
 
 ```bash
-./build/bin/go-music.exe
+./build/bin/stack-music.exe
 ```
 
 自检清单：
 
-1. 窗口标题「堆栈音乐播放器」出现，WebView2 渲染无白屏；
+1. 窗口标题「Stack Music」出现，WebView2 渲染无白屏；
 2. 侧栏四个页面可切换，曲库表格有数据；
 3. `curl http://127.0.0.1:8080/api/status` 返回 JSON；
 4. 浏览器打开 `http://127.0.0.1:8080/` 显示与桌面端一致的界面，可控制播放。

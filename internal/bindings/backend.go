@@ -10,14 +10,14 @@ import (
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
-	"go-music/internal/background"
-	"go-music/internal/config"
-	"go-music/internal/gen"
-	"go-music/internal/library"
-	"go-music/internal/lyrics"
-	"go-music/internal/model"
-	"go-music/internal/player"
-	"go-music/internal/store"
+	"stack-music/internal/background"
+	"stack-music/internal/config"
+	"stack-music/internal/gen"
+	"stack-music/internal/library"
+	"stack-music/internal/lyrics"
+	"stack-music/internal/model"
+	"stack-music/internal/player"
+	"stack-music/internal/store"
 )
 
 // Status 播放器状态快照（与 server 的 HTTP 状态保持字段一致）。

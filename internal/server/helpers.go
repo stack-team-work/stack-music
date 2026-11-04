@@ -3,7 +3,7 @@ package server
 import (
 	"encoding/json"
 
-	"go-music/internal/model"
+	"stack-music/internal/model"
 )
 
 func jsonMarshal(v any) ([]byte, error) { return json.Marshal(v) }

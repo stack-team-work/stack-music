@@ -1,4 +1,4 @@
-module go-music
+module stack-music
 
 go 1.25.0
 

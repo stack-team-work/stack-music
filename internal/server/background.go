@@ -6,8 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"go-music/internal/background"
-	"go-music/internal/config"
+	"stack-music/internal/background"
+	"stack-music/internal/config"
 )
 
 // --- 界面背景（浏览器远程模式）---

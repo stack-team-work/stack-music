@@ -8,11 +8,11 @@ import (
 	"testing"
 	"testing/fstest"
 
-	"go-music/internal/config"
+	"stack-music/internal/config"
 )
 
 var testFS = fstest.MapFS{
-	"index.html": &fstest.MapFile{Data: []byte("<title>堆栈音乐播放器</title>")},
+	"index.html": &fstest.MapFile{Data: []byte("<title>Stack Music</title>")},
 }
 
 func testServer() *Server {
@@ -44,8 +44,8 @@ func TestStaticRoutes(t *testing.T) {
 			continue // 重定向响应无内容可检查
 		}
 		body, _ := io.ReadAll(w.Result().Body)
-		if strings.Contains(string(body), "堆栈音乐播放器") == false {
-			t.Errorf("%s 返回内容缺少 堆栈音乐播放器标识: %d bytes", c.path, len(body))
+		if strings.Contains(string(body), "Stack Music") == false {
+			t.Errorf("%s 返回内容缺少 Stack Music标识: %d bytes", c.path, len(body))
 		}
 	}
 }

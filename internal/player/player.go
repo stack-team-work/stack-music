@@ -18,7 +18,7 @@ import (
 	"github.com/gopxl/beep/vorbis"
 	"github.com/gopxl/beep/wav"
 
-	"go-music/internal/model"
+	"stack-music/internal/model"
 )
 
 // State 播放状态。
