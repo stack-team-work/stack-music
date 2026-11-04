@@ -48,13 +48,19 @@ const curName = ref('')
 const detailSongs = ref<Song[]>([])
 const detailLoading = ref(false)
 
-async function openDetail(pl: Playlist) {
-  curId.value = pl.id
-  curName.value = pl.name
+async function openDetail(plOrId: Playlist | number) {
+  const id = typeof plOrId === 'number' ? plOrId : plOrId.id
+  let name = typeof plOrId === 'number' ? '' : plOrId.name
+  curId.value = id
   detailLoading.value = true
-  detailSongs.value = await api.getPlaylistSongs(pl.id) || []
+  detailSongs.value = await api.getPlaylistSongs(id) || []
   detailLoading.value = false
-  pl.song_count = detailSongs.value.length
+  if (!name) {
+    const found = playlists.value.find(p => p.id === id)
+    name = found?.name || '歌单'
+  }
+  curName.value = name
+  if (typeof plOrId !== 'number') plOrId.song_count = detailSongs.value.length
 }
 function backToList() {
   curId.value = 0
@@ -145,17 +151,15 @@ async function pickAdd(song: Song) {
       </div>
       <SongTable :songs="detailSongs" :loading="detailLoading" action="remove" empty-text="歌单为空，点击「添加歌曲」加入" @remove="removeFrom" />
     </template>
-  </div>
-
-  <!-- 新建歌单 -->
-  <NModal v-model:show="showNew" preset="dialog" title="新建歌单"
+    <!-- 新建歌单 -->
+    <NModal v-model:show="showNew" preset="dialog" title="新建歌单"
     positive-text="创建" negative-text="取消"
     @positive-click="create" @negative-click="showNew = false">
     <NInput v-model:value="newName" placeholder="歌单名称" @keyup.enter="create" />
   </NModal>
 
-  <!-- 添加歌曲 -->
-  <NModal v-model:show="showAdd" preset="card" title="添加歌曲到当前歌单" style="width: 480px" @close="showAdd = false">
+    <!-- 添加歌曲 -->
+    <NModal v-model:show="showAdd" preset="card" title="添加歌曲到当前歌单" style="width: 480px" @close="showAdd = false">
     <NInput v-model:value="addQ" placeholder="搜索…" clearable class="add-search" />
     <div class="add-list">
       <div
@@ -177,7 +181,8 @@ async function pickAdd(song: Song) {
         关闭
       </NButton>
     </template>
-  </NModal>
+    </NModal>
+  </div>
 </template>
 
 <style scoped>
@@ -211,7 +216,7 @@ async function pickAdd(song: Song) {
   width: 44px;
   height: 44px;
   border-radius: 8px;
-  background: var(--bg-hover);
+  background: rgba(255, 228, 240, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -249,7 +254,7 @@ async function pickAdd(song: Song) {
   cursor: pointer;
 }
 .add-row:hover {
-  background: var(--bg-hover);
+  background: rgba(255, 228, 240, 0.6);
 }
 .add-row.added {
   opacity: 0.45;

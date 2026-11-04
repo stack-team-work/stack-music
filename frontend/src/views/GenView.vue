@@ -416,7 +416,7 @@ onUnmounted(() => {
   font-size: 12px;
 }
 .cfg {
-  background: var(--bg-panel);
+  background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 4px 14px;
@@ -447,7 +447,7 @@ onUnmounted(() => {
   color: var(--fg-dim);
 }
 .form-card {
-  background: var(--bg-panel);
+  background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 14px 16px;
@@ -472,7 +472,7 @@ onUnmounted(() => {
 }
 .mode-tab:hover {
   color: var(--fg);
-  border-color: #3d4453;
+  border-color: var(--border-strong);
 }
 .mode-tab.active {
   background: var(--accent-weak);
@@ -482,7 +482,7 @@ onUnmounted(() => {
 }
 .mode-hint {
   font-size: 12px;
-  color: #5a6478;
+  color: var(--fg-dim);
   margin-left: 6px;
 }
 .form-row {
@@ -516,7 +516,7 @@ onUnmounted(() => {
 }
 .empty {
   padding: 30px 0;
-  background: var(--bg-panel);
+  background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 10px;
 }
@@ -529,13 +529,13 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--bg-panel);
+  background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px 14px;
 }
 .task.running {
-  border-color: rgba(76, 195, 138, 0.4);
+  border-color: rgba(255, 111, 165, 0.45);
 }
 .task-main {
   display: flex;

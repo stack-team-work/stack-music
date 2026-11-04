@@ -76,7 +76,7 @@ watch(() => store.scanVersion, () => load(q.value))
 
     <div class="hint" v-if="store.scanning">正在扫描…</div>
 
-    <SongTable :songs="songs" :loading="loading" action="favorite" class="table" />
+    <SongTable :songs="songs" :loading="loading" action="favorite" />
   </div>
 </template>
 
@@ -103,8 +103,5 @@ watch(() => store.scanVersion, () => load(q.value))
   font-size: 12px;
   color: var(--fg-dim);
 }
-.table {
-  flex: 1;
-  min-height: 0;
-}
+
 </style>

@@ -9,7 +9,7 @@ import {
   PlayBackOutline, PlayForwardOutline, PlayOutline, PauseOutline,
   RepeatOutline, Repeat, ShuffleOutline, ListOutline,
   HeartOutline, Heart, VolumeHighOutline, VolumeMuteOutline,
-  MusicalNotesOutline, AddOutline, DiscOutline, MusicalNotes,
+  MusicalNotesOutline, AddOutline, DiscOutline, MusicalNotes, ImagesOutline,
 } from '@vicons/ionicons5'
 import { api } from '../api'
 import { store } from '../store'
@@ -205,6 +205,9 @@ const lyricsBtn = computed(() => store.lyricsOpen ? DiscOutline : MusicalNotesOu
       <NButton quaternary circle title="加入歌单" :disabled="!store.status?.current" @click="openAddModal">
         <template #icon><NIcon :component="AddOutline" :size="20" /></template>
       </NButton>
+      <NButton quaternary circle title="切换背景" @click="store.backgroundPickerOpen = true">
+        <template #icon><NIcon :component="ImagesOutline" :size="20" /></template>
+      </NButton>
     </div>
   </div>
 
@@ -241,9 +244,11 @@ const lyricsBtn = computed(() => store.lyricsOpen ? DiscOutline : MusicalNotesOu
 .cover-thumb {
   width: 52px;
   height: 52px;
-  border-radius: 8px;
+  border-radius: 10px;
   object-fit: cover;
   flex-shrink: 0;
+  border: 2px solid #fff;
+  box-shadow: 0 3px 12px rgba(255, 140, 180, 0.35);
 }
 .meta {
   min-width: 0;
@@ -274,6 +279,13 @@ const lyricsBtn = computed(() => store.lyricsOpen ? DiscOutline : MusicalNotesOu
 .play-btn {
   width: 46px;
   height: 46px;
+  background: var(--accent-grad) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(255, 111, 165, 0.35);
+}
+.play-btn:hover {
+  filter: brightness(1.05);
 }
 .vol {
   display: flex;

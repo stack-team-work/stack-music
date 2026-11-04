@@ -18,6 +18,10 @@ export const store = reactive({
   playingId: -1,
   // 扫描完成次数：视图 watch 它重新加载列表
   scanVersion: 0,
+  // 背景选择面板开关
+  backgroundPickerOpen: false,
+  // 当前背景：id（builtin:xxx 或用户图片文件名）与图片 URL
+  background: { id: 'builtin:sakura', url: '' } as { id: string; url: string },
 })
 
 // 播放某一行：以当前浏览列表为队列

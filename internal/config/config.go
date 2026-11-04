@@ -27,15 +27,18 @@ type Config struct {
 	Libraries []string `json:"libraries"`
 	// Gen AI 音乐生成配置。
 	Gen GenConfig `json:"gen"`
+	// Background 当前界面背景（builtin:xxx 或 data/backgrounds 下的文件名）。
+	Background string `json:"background"`
 }
 
 // Default 返回默认配置。
 func Default() *Config {
 	return &Config{
-		Port:   8080,
-		Volume: 100,
-		Mode:   1, // 列表循环
-		Gen:    GenConfig{Provider: "local"},
+		Port:       8080,
+		Volume:     100,
+		Mode:       1, // 列表循环
+		Gen:        GenConfig{Provider: "local"},
+		Background: "builtin:sakura",
 	}
 }
 

@@ -10,6 +10,7 @@ import (
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
+	"go-music/internal/background"
 	"go-music/internal/config"
 	"go-music/internal/gen"
 	"go-music/internal/library"
@@ -63,6 +64,7 @@ type Backend struct {
 	pl      *player.Player
 	dataDir string
 	genMgr  *gen.Manager
+	bgMgr   *background.Manager
 
 	ctx context.Context
 	mu  sync.Mutex // 保护扫描等操作
@@ -73,6 +75,7 @@ type Backend struct {
 // New 构造绑定层。
 func New(cfg *config.Config, st *store.Store, lib *library.Library, pl *player.Player, dataDir string) *Backend {
 	b := &Backend{cfg: cfg, st: st, lib: lib, pl: pl, dataDir: dataDir}
+	b.bgMgr = background.NewManager(dataDir)
 	// AI 音乐生成管理器（配置每次提交时实时读取）
 	b.genMgr = gen.NewManager(st, lib, dataDir, func() gen.Config {
 		g := b.cfg.Gen

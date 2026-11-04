@@ -264,6 +264,43 @@ data: {"state":"playing",...}
 
 返回歌曲封面图（`image/jpeg` 或 `image/png`，无封面返回 404）。
 
+## 界面背景
+
+### GET /api/backgrounds
+
+背景列表与当前选择（内置渐变背景由前端 CSS 实现，不在列表中）。
+
+```json
+{
+  "current": "builtin:sakura",
+  "items": [ { "id": "06f39b96….png", "name": "自定义背景 06f39b96", "url": "/api/backgrounds/06f39b96….png", "builtin": false } ]
+}
+```
+
+### GET /api/backgrounds/:id
+
+返回背景图片文件（带 `Access-Control-Allow-Origin: *`，供桌面窗口直接引用）。
+
+### POST /api/backgrounds/upload
+
+浏览器端上传背景图（multipart，字段名 `file`；jpg/png/webp/gif，≤15MB）。上传后自动设为当前背景。
+
+```json
+{ "current": "06f39b96….png", "item": { "id": "06f39b96….png", "name": "自定义背景 06f39b96", "url": "/api/backgrounds/06f39b96….png" } }
+```
+
+### POST /api/backgrounds/current
+
+切换背景（`builtin:sakura` / `builtin:sky` / `builtin:night` / `builtin:mint` 或用户图片 id）。
+
+```json
+{ "id": "builtin:mint" }   →  { "ok": true, "current": "builtin:mint" }
+```
+
+### DELETE /api/backgrounds/:id
+
+删除用户背景；若正在使用则自动回退默认渐变。
+
 ---
 
 ## 固定页面

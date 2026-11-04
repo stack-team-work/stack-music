@@ -13,6 +13,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"go-music/internal/background"
 	"go-music/internal/config"
 	"go-music/internal/gen"
 	"go-music/internal/library"
@@ -58,6 +59,7 @@ type Server struct {
 	lib    *library.Library
 	pl     Controller
 	genMgr *gen.Manager
+	bgMgr  *background.Manager
 	port   int
 	assets fs.FS // 前端构建产物（frontend/dist）
 }
@@ -135,6 +137,13 @@ func (s *Server) buildRouter() *gin.Engine {
 		api.POST("/gen/submit", s.handleGenSubmit)
 		api.GET("/gen/tasks", s.handleGenTasks)
 		api.DELETE("/gen/tasks/:id", s.handleGenDelete)
+
+		// 界面背景
+		api.GET("/backgrounds", s.handleGetBackgrounds)
+		api.GET("/backgrounds/:id", s.handleBackgroundImage)
+		api.POST("/backgrounds/upload", s.handleBackgroundUpload)
+		api.POST("/backgrounds/current", s.handleSetBackground)
+		api.DELETE("/backgrounds/:id", s.handleDeleteBackground)
 		api.GET("/covers/:id", s.handleCover)
 		api.POST("/scan", s.handleScan)
 		api.GET("/library", s.handleLibrary)

@@ -15,11 +15,14 @@ const items: { key: ViewName; label: string; icon: any }[] = [
 </script>
 
 <template>
-  <div class="logo">
-    <span class="logo-dot">♪</span>
-    <span>堆栈音乐</span>
-    <span class="logo-mode" v-if="false" />
+  <div class="brand">
+    <div class="brand-mark">♪</div>
+    <div class="brand-text">
+      <div class="brand-name">堆栈音乐</div>
+      <div class="brand-sub">Stack Music Player</div>
+    </div>
   </div>
+
   <div class="nav">
     <button
       v-for="it in items"
@@ -32,34 +35,68 @@ const items: { key: ViewName; label: string; icon: any }[] = [
       <span>{{ it.label }}</span>
     </button>
   </div>
-  <div class="side-footer">v1.1.0 · Go + Wails</div>
+
+  <div class="side-footer">v1.2.1 · Go + Wails</div>
 </template>
 
 <style scoped>
-.logo {
+.brand {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 17px;
-  font-weight: 700;
-  padding: 6px 10px 16px;
+  gap: 10px;
+  margin: 2px 4px 14px;
+  padding: 12px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255, 214, 232, 0.75), rgba(214, 237, 255, 0.75));
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 6px 18px rgba(255, 150, 190, 0.18);
 }
-.logo-dot {
-  color: var(--accent);
-  font-size: 20px;
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--accent-grad);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(255, 111, 165, 0.35);
+  flex-shrink: 0;
+}
+.brand-text {
+  min-width: 0;
+}
+.brand-name {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  background: var(--accent-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  white-space: nowrap;
+}
+.brand-sub {
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.4px;
+  white-space: nowrap;
 }
 .nav {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 .nav-item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 9px 12px;
+  padding: 10px 12px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   background: transparent;
   color: var(--fg-dim);
   font-size: 14px;
@@ -68,18 +105,31 @@ const items: { key: ViewName; label: string; icon: any }[] = [
   transition: background 0.15s, color 0.15s;
 }
 .nav-item:hover {
-  background: var(--bg-hover);
+  background: rgba(255, 228, 240, 0.6);
   color: var(--fg);
 }
 .nav-item.active {
-  background: var(--accent-weak);
-  color: var(--accent);
+  background: var(--accent-grad);
+  color: #fff;
   font-weight: 600;
+  box-shadow: 0 4px 14px rgba(255, 111, 165, 0.28);
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 18px;
+  border-radius: 2px;
+  background: var(--accent);
 }
 .side-footer {
-  margin-top: auto;
-  padding: 8px 10px;
+  margin-top: auto; /* 固定在侧栏最底部 */
+  padding: 10px 10px 4px;
+  border-top: 1px dashed var(--border-strong);
   font-size: 12px;
-  color: #4a5364;
+  color: #b9afd1;
 }
 </style>

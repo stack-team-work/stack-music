@@ -139,3 +139,41 @@ export const GEN_STYLES = [
 
 export const GEN_MOODS = ['欢快', '伤感', '激昂', '平静', '浪漫', '神秘'] as const
 export const GEN_LANGS = ['中文', '英文', '日文', '韩文', '粤语', '纯音乐'] as const
+
+// ---------- 界面背景 ----------
+
+export interface BackgroundItem {
+  id: string
+  name: string
+  url: string
+  builtin?: boolean
+}
+
+export interface Backgrounds {
+  current: string
+  items: BackgroundItem[]
+}
+
+// 内置渐变背景（前端 CSS，id 与后端 config 对齐）
+export const BUILTIN_BACKGROUNDS = [
+  {
+    id: 'builtin:sakura',
+    name: '樱花粉',
+    css: 'linear-gradient(135deg, #ffffff 0%, #ffe3f1 45%, #e3f2ff 100%)',
+  },
+  {
+    id: 'builtin:sky',
+    name: '晴空蓝',
+    css: 'linear-gradient(160deg, #eaf6ff 0%, #dff0ff 45%, #fdf3ff 100%)',
+  },
+  {
+    id: 'builtin:night',
+    name: '星空紫',
+    css: 'linear-gradient(150deg, #f3eeff 0%, #e8e0ff 45%, #ffeaf6 100%)',
+  },
+  {
+    id: 'builtin:mint',
+    name: '薄荷绿',
+    css: 'linear-gradient(145deg, #f0fff9 0%, #e3fbf3 45%, #eef7ff 100%)',
+  },
+] as const

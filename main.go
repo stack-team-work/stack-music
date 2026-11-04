@@ -16,6 +16,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 
+	"go-music/internal/background"
 	"go-music/internal/bindings"
 	"go-music/internal/config"
 	"go-music/internal/library"
@@ -55,6 +56,7 @@ func main() {
 	// 局域网远程控制服务（浏览器打开 http://IP:端口 复用同一前端）
 	srv := server.New(cfg, st, lib, pl, distFS)
 	srv.SetGenManager(backend.GenManager())
+	srv.SetBackgroundManager(background.NewManager(dataDir))
 	go func() {
 		if err := srv.Start(); err != nil {
 			log.Printf("Web 服务启动失败（端口 %d）: %v", cfg.Port, err)

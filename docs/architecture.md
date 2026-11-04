@@ -54,6 +54,7 @@
 | `internal/server` | HTTP 服务 | REST API、SSE、前端静态资源（`fs.FS` 注入，与 Wails 共用 `frontend/dist`） |
 | `internal/lyrics` | LRC 解析 | `[mm:ss.xx]` 时间戳、offset 元数据、按时间排序 |
 | `internal/gen` | AI 音乐生成 | Provider 抽象（MiniMax/Suno 官方或中转，base_url/key/model 可配）+ 本地合成器（离线兜底）+ Manager（提交/轮询/下载/入库/事件），失败重试与 30 分钟超时 |
+| `internal/background` | 界面背景 | 用户图片导入/列表/删除（白名单扩展名、≤15MB、UUID 命名防路径穿越）；内置渐变由前端 CSS 提供 |
 | `frontend/` | Vue3 + Naive UI | 双模式 API 层（`src/api/`）；页面：曲库/歌单/收藏/历史；组件：歌曲表格/播放条/歌词面板 |
 
 ## 3. 播放器设计（internal/player）
@@ -165,6 +166,12 @@ history(id, song_id, played_at)   -- 保留最近 200 条
 | 内置本地合成器作为兜底 | 没有 Key 也能端到端跑通生成→入库→回听（可自动化验证）；远端模型只需换 Provider，不阻塞主流程 |
 | 生成任务全部落库（gen_tasks 表） | 支持历史回看、参数回填重生成、失败原因追踪；删除任务级联清理入库歌曲与音频文件 |
 | 生成歌曲 source='generated' 标记 + My Music 专辑 | 与导入文件区分（重扫描不受影响），曲库搜索可按专辑/艺术家过滤 |
+| 背景系统不内置版权图片，只做"内置渐变 + 用户导入" | 动漫壁纸（火影等）属版权作品，不能随程序分发；用户导入自己拥有授权的图片合法且灵活 |
+| 背景列表在 Wails 模式返回绝对 URL | 桌面窗口 origin 与 127.0.0.1 服务不同源；img/background-image 加载无需 CORS，但需要可解析的绝对地址 |
+| 背景层上方叠加白色遮罩 | 图片背景对比度不可控，浅色主题下用 72% 白遮罩 + 轻模糊保证文字可读性 |
+| 歌曲表格标题列不设宽度 | Naive UI DataTable 无宽度列自动分配剩余空间，实现列宽总和始终等于容器宽度（解决宽屏右侧留白） |
+| 布局容器用显式 `<aside>/<main>/<footer>` 包裹多根组件 | Vue 3 多根组件不会透传父级传入的 class，直接 `<AppSide class="app-side" />` 会导致 grid 定位失效、布局错乱（v1.2.1 修复的根因） |
+| SongTable 内部自带 wrapper 撑满 | 不依赖调用方传 class 或 Naive UI 的 class 透传，组件自身保证任意页面下铺满 |
 | `r.GET("/")` 直接读嵌入 HTML 而非 FileFromFS | Go 1.25 的 FileServer 将 `/index.html` 规范化为 301，FileFromFS 内部把路径设为 `index.html` 必触发该重定向 |
 | 静态页走 `NoRoute` 而非 `StaticFS("/")` | `/*filepath` 通配与 `/api/*` 路由冲突导致 panic |
 | embed 后 `fs.Sub("frontend/dist")` 再传 Wails/Gin | `all:frontend/dist` 的 embed 根是 `frontend/`，直接按 `index.html` 查找会 miss |

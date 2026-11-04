@@ -78,8 +78,10 @@ const title = computed(() => store.status?.current?.title || '歌词')
   top: 0;
   bottom: 0;
   width: 340px;
-  background: var(--bg-panel);
+  background: var(--panel);
+  backdrop-filter: blur(16px);
   border-left: 1px solid var(--border);
+  box-shadow: -8px 0 24px rgba(255, 160, 195, 0.12);
   z-index: 50;
   display: flex;
   flex-direction: column;

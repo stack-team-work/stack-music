@@ -4,8 +4,8 @@
 // 两端接口签名一致，业务组件无感知。
 
 import type {
-  GenConfig, GenRequest, GenTask, LibraryInfo, LyricLine, Playlist, PlayRequest,
-  PlayerEvent, ScanDone, ScanProgress, Song, Status,
+  BackgroundItem, Backgrounds, GenConfig, GenRequest, GenTask, LibraryInfo, LyricLine,
+  Playlist, PlayRequest, PlayerEvent, ScanDone, ScanProgress, Song, Status,
 } from '../types'
 
 const w = window as any
@@ -165,4 +165,35 @@ export const api = {
       onWailsEvent(n, (task: GenTask) => cb(n, task)))
     return () => offs.forEach(off => off())
   },
+
+  // ---------- 界面背景 ----------
+
+  getBackgrounds: (): Promise<Backgrounds> =>
+    mode === 'wails' ? wailsCall('GetBackgrounds') : http('/api/backgrounds'),
+
+  setBackground: (id: string): Promise<void> =>
+    mode === 'wails' ? wailsCall('SetBackground', id) : http('/api/backgrounds/current', 'POST', { id }),
+
+  importBackground: (): Promise<BackgroundItem | null> =>
+    mode === 'wails'
+      ? wailsCall('ImportBackground').then((it: BackgroundItem | null) => it || null)
+      : Promise.resolve(null), // 浏览器模式由组件上传
+
+  uploadBackground: async (file: File): Promise<BackgroundItem> => {
+    const fd = new FormData()
+    fd.append('file', file)
+    const r = await fetch('/api/backgrounds/upload', { method: 'POST', body: fd })
+    if (!r.ok) {
+      const err = await r.json().catch(() => null)
+      throw new Error(err?.error || `HTTP ${r.status}`)
+    }
+    const data = await r.json()
+    return data.item as BackgroundItem
+  },
+
+  deleteBackground: (id: string): Promise<void> =>
+    mode === 'wails' ? wailsCall('DeleteBackground', id) : http(`/api/backgrounds/${id}`, 'DELETE'),
+
+  // 背景图片地址：Wails 绑定返回绝对地址，HTTP 模式返回相对地址
+  backgroundURL: (item: BackgroundItem): string => item.url || '',
 }

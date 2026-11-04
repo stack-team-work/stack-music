@@ -42,14 +42,13 @@ const columns = computed<DataTableColumns<Song>>(() => {
     {
       title: '#',
       key: 'idx',
-      width: 56,
+      width: 52,
       render: (row, index) => h('span', { class: 'cell-idx' },
         row.id === store.playingId ? '▶' : String(index + 1)),
     },
     {
       title: '标题',
       key: 'title',
-      minWidth: 200,
       ellipsis: { tooltip: true },
       render: (row) => h('span', { class: row.id === store.playingId ? 'cell-title playing' : 'cell-title' },
         row.title || '(未知)'),
@@ -57,14 +56,14 @@ const columns = computed<DataTableColumns<Song>>(() => {
     {
       title: '艺术家',
       key: 'artist',
-      minWidth: 120,
+      width: 160,
       ellipsis: { tooltip: true },
       render: (row) => row.artist || '—',
     },
     {
       title: '专辑',
       key: 'album',
-      minWidth: 120,
+      width: 160,
       ellipsis: { tooltip: true },
       render: (row) => row.album || '—',
     },
@@ -104,23 +103,35 @@ function onRowClick(row: Song) {
 </script>
 
 <template>
-  <NDataTable
-    :columns="columns"
-    :data="songs"
-    :loading="loading"
-    flex-height
-    :row-key="(r: Song) => r.id"
-    :row-class-name="rowClassName"
-    :row-props="(row: Song) => ({ onClick: () => onRowClick(row) })"
-    :bordered="false"
-    :single-line="false"
-    size="small"
-    :empty-text="emptyText || '还没有歌曲，先去曲库导入音乐文件夹吧'"
-    scroll-x="auto"
-  />
+  <div class="song-table-wrap">
+    <NDataTable
+      :columns="columns"
+      :data="songs"
+      :loading="loading"
+      flex-height
+      :row-key="(r: Song) => r.id"
+      :row-class-name="rowClassName"
+      :row-props="(row: Song) => ({ onClick: () => onRowClick(row) })"
+      :bordered="false"
+      :single-line="false"
+      size="small"
+      :empty-text="emptyText || '还没有歌曲，先去曲库导入音乐文件夹吧'"
+    />
+  </div>
 </template>
 
 <style scoped>
+.song-table-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.song-table-wrap :deep(.n-data-table) {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+}
 .cell-idx {
   color: var(--fg-dim);
   font-size: 12px;
@@ -134,9 +145,6 @@ function onRowClick(row: Song) {
 .cell-dur {
   color: var(--fg-dim);
   font-size: 12px;
-}
-:deep(.playing-row > td) {
-  background: var(--accent-weak) !important;
 }
 :deep(.n-data-table-tr:hover > td) {
   cursor: pointer;
